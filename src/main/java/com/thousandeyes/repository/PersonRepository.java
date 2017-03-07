@@ -1,8 +1,9 @@
 package com.thousandeyes.repository;
 
-import java.util.List;
-
 import com.thousandeyes.models.Person;
+import com.thousandeyes.models.PersonWithPopularFollower;
+
+import java.util.List;
 
 public interface PersonRepository {
 	List<Person> all();
@@ -18,4 +19,6 @@ public interface PersonRepository {
 	boolean unfollow(Person user, Person target);
 	
 	boolean isFollowing(Person user, Person target);
+
+	List<PersonWithPopularFollower> withPopularFollowers();
 }
