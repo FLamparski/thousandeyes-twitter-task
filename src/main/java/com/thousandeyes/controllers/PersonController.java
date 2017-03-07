@@ -1,7 +1,11 @@
 package com.thousandeyes.controllers;
 
-import java.util.List;
-
+import com.thousandeyes.errors.BadRequestException;
+import com.thousandeyes.errors.NotFoundException;
+import com.thousandeyes.models.Person;
+import com.thousandeyes.models.PersonWithPopularFollower;
+import com.thousandeyes.models.Status;
+import com.thousandeyes.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,11 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.thousandeyes.errors.BadRequestException;
-import com.thousandeyes.errors.NotFoundException;
-import com.thousandeyes.models.Person;
-import com.thousandeyes.models.Status;
-import com.thousandeyes.repository.PersonRepository;
+import java.util.List;
 
 @RestController
 @RequestMapping("/people")
@@ -25,6 +25,11 @@ public class PersonController {
 	@RequestMapping("/")
 	public List<Person> all() {
 		return persons.all();
+	}
+
+	@RequestMapping("/popular_followers")
+	public List<PersonWithPopularFollower> popularFollowers() {
+		return persons.withPopularFollowers();
 	}
 	
 	@RequestMapping("/{id}")
