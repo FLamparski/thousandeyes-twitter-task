@@ -87,19 +87,19 @@ public class JdbcPersonRepository implements PersonRepository {
         // ordered by first the user ID, then the user's followers' follower counts, and finally to break
         // ties the follower's user ID.
         List<PersonWithPopularFollower> peopleWithFollowers = db
-            .query("select p.id, p.name, popf.id as popf_id, popf.name as popf_name, popf.fc as popf_fc\n" +
-                    "from person p\n" +
-                    "join followers f on p.id = f.person_id\n" +
-                        "join (select p.*, count(f.id) as fc\n" +
-                        "  from person p\n" +
-                        "  join followers f on p.id = f.person_id\n" +
-                        "  group by p.id, p.name\n" +
-                        "  order by fc desc) popf on f.follower_person_id = popf.id\n" +
-                        "order by p.id asc, fc desc, popf_id asc",
-                    (row, rowid) -> new PersonWithPopularFollower(
-                        new Person(row.getLong("id"), row.getString("name")),
-                        new Person(row.getLong("popf_id"), row.getString("popf_name")),
-                        row.getInt("popf_fc")));
+                .query("select p.id, p.name, popf.id as popf_id, popf.name as popf_name, popf.fc as popf_fc\n" +
+                                "from person p\n" +
+                                "join followers f on p.id = f.person_id\n" +
+                                "join (select p.*, count(f.id) as fc\n" +
+                                "  from person p\n" +
+                                "  join followers f on p.id = f.person_id\n" +
+                                "  group by p.id, p.name\n" +
+                                "  order by fc desc) popf on f.follower_person_id = popf.id\n" +
+                                "order by p.id asc, fc desc, popf_id asc",
+                        (row, rowid) -> new PersonWithPopularFollower(
+                                new Person(row.getLong("id"), row.getString("name")),
+                                new Person(row.getLong("popf_id"), row.getString("popf_name")),
+                                row.getInt("popf_fc")));
 
         // I make use of these orderings here to easily grab the top follower for each user.
         // I was not sure on how I could accomplish this in SQL (or at least in (the version of) H2 as provided),
