@@ -10,22 +10,22 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-	@Autowired
-	private CustomAuthenticationProvider authProvider;
+    @Autowired
+    private CustomAuthenticationProvider authProvider;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/h2-console/*").permitAll()
-            .antMatchers("/people/*").hasRole("USER")
-            .anyRequest().authenticated().and().httpBasic();
+                .antMatchers("/h2-console/*").permitAll()
+                .antMatchers("/people/*").hasRole("USER")
+                .anyRequest().authenticated().and().httpBasic();
 
         http.csrf().disable();
         http.headers().frameOptions().disable();
     }
-    
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    	auth.authenticationProvider(authProvider);
+        auth.authenticationProvider(authProvider);
     }
 }
