@@ -1,11 +1,5 @@
 package com.thousandeyes;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-import java.util.Map;
-
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +11,12 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
@@ -71,5 +71,18 @@ public class PeopleEndpoint {
 		List<Map<String, Object>> ninesFollowers = (List<Map<String, Object>>) api.withBasicAuth("1", "thousandeyes").getForObject("/people/9/followers", List.class);
 		// User 1 should no longer be a follower of 9
 		assertEquals(7, ninesFollowers.get(ninesFollowers.size() - 1).get("id"));
+	}
+
+	@Test
+	public void t_5_people_popularFollower() {
+		@SuppressWarnings("unchecked")
+		List<Map<String, Object>> peopleWithFollowers = api.withBasicAuth("1", "thousandeyes").getForObject("/people/popular_followers", List.class);
+
+		//noinspection unchecked
+        Map<String, Object> person1 = peopleWithFollowers.stream().filter(p -> ((Map<String, Object>) p.get("person")).get("id").equals(1)).findFirst().orElse(null);
+		assertTrue(person1 != null);
+		assertEquals(6, person1.get("popularFollowerFollowerCount"));
+        //noinspection unchecked
+        assertEquals(5, ((Map<String, Object>) person1.get("popularFollower")).get("id"));
 	}
 }
