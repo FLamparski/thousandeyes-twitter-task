@@ -105,6 +105,7 @@ public class JdbcPersonRepository implements PersonRepository {
         // I was not sure on how I could accomplish this in SQL (or at least in (the version of) H2 as provided),
         // however I think it is still possible to improve on the query and not need to do any further
         // processing here.
+        // I made some more attempts but ended up crashing H2 instead; see "database fail.png"
         Map<Long, PersonWithPopularFollower> index = new HashMap<>();
         for (PersonWithPopularFollower p : peopleWithFollowers) {
             index.putIfAbsent(p.getPerson().getId(), p);
