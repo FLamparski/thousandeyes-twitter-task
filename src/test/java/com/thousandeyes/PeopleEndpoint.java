@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING) // Some tests are sensitive to order to test a larger interaction in chunks
 public class PeopleEndpoint {
     @Autowired
     private TestRestTemplate api;
@@ -74,15 +74,30 @@ public class PeopleEndpoint {
     }
 
     @Test
-    public void t_5_people_popularFollower() {
+    public void t_5a_people_popularFollower() {
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> peopleWithFollowers = api.withBasicAuth("1", "thousandeyes").getForObject("/people/popular_followers", List.class);
 
-        //noinspection unchecked
+        @SuppressWarnings("unchecked")
         Map<String, Object> person1 = peopleWithFollowers.stream().filter(p -> ((Map<String, Object>) p.get("person")).get("id").equals(1)).findFirst().orElse(null);
         assertTrue(person1 != null);
         assertEquals(6, person1.get("popularFollowerFollowerCount"));
-        //noinspection unchecked
-        assertEquals(5, ((Map<String, Object>) person1.get("popularFollower")).get("id"));
+        @SuppressWarnings("unchecked")
+        Map<String, Object> popularFollower = (Map<String, Object>) person1.get("popularFollower");
+        assertEquals(5, popularFollower.get("id"));
+    }
+    @Test
+    public void t_5b_people_popularFollower() {
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> peopleWithFollowers = api.withBasicAuth("1", "thousandeyes").getForObject("/people/popular_followers", List.class);
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> person2 = peopleWithFollowers.stream().filter(p -> ((Map<String, Object>) p.get("person")).get("id").equals(2)).findFirst().orElse(null);
+        assertTrue(person2 != null);
+        assertEquals(7, person2.get("popularFollowerFollowerCount"));
+        @SuppressWarnings("unchecked")
+        Map<String, Object> popularFollower = (Map<String, Object>) person2.get("popularFollower");
+        assertEquals(7, popularFollower.get("id"));
+        assertEquals("Xandra Christensen", popularFollower.get("name"));
     }
 }
